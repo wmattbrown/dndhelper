@@ -60,9 +60,7 @@ history_length <- 5
 # need to set initial values... because I'm a hack - in server now
 saving_throw_history <- rep("", history_length)
 skill_check_history <- rep("", history_length)
-
-saving_throw_history2 <- rep("", history_length)
-skill_check_history2 <- rep("", history_length)
+dice_roll_history <- rep("", history_length)
 
 
 

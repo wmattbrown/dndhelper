@@ -5,16 +5,16 @@ shinyServer(function(input, output, session) {
   
   # HELPER FUNCTIONS----
   saving_throw_helper <- function(stat){
-    saving_throw_history2 <<- c(saving_throw_history2[2:history_length],
+    saving_throw_history <<- c(saving_throw_history[2:history_length],
                                 sprintf("%s: %s",
                                         stat,
                                         roll_save_check(input[[sprintf("character_%s", tolower(stat))]],
                                                         input$character_proficiency * (stat %in% input$character_profs))$message))
     
-    saving_throw_message2 <- paste(saving_throw_history2, 
+    saving_throw_message <- paste(saving_throw_history, 
                                    collapse = "<br/>")
     
-    output$saving_throw_result2 <- renderUI(HTML(saving_throw_message2))
+    output$saving_throw_result2 <- renderUI(HTML(saving_throw_message))
   }
   
   skill_check_helper <- function(skill){
@@ -25,17 +25,17 @@ shinyServer(function(input, output, session) {
     
     stat <- skill_abilities[tolower(nice_skill)]
     
-    skill_check_history2 <<- c(skill_check_history2[2:history_length],
+    skill_check_history <<- c(skill_check_history[2:history_length],
                                sprintf("%s: %s", 
                                        nice_skill,
                                        roll_save_check(
                                          input[[sprintf("character_%s", tolower(stat))]],
                                          input$character_proficiency * (stat %in% input$character_profs))$message))
     
-    skill_check_message2 <- paste(skill_check_history2, 
+    skill_check_message <- paste(skill_check_history, 
                                   collapse = "<br/>")
     
-    output$skill_check_result2 <- renderUI(HTML(skill_check_message2))
+    output$skill_check_result2 <- renderUI(HTML(skill_check_message))
   }
   
   
@@ -223,30 +223,29 @@ shinyServer(function(input, output, session) {
       # I've removed the dice roll modifier, seems kind of silly. 
       # i might remove the roller altogether once the specific roll things are setup
       # show all dice rolls + num_dice * modifier = result
-      roll <- roll(input$die_type, input$number_of_dice)
+      rolls <- roll(input$die_type, input$number_of_dice)
       
       if (input$number_of_dice == 1) {
-        # one dice, no modifier
-        # if(input$dice_modifier == 0){
-        res <- as.character(roll)
-        # one die + modifier
-        # } else{
-        #   res <- sprintf("%d + %d = %d", roll, input$dice_modifier, roll + input$dice_modifier)
-        # }
+        # one dice
+        res <- sprintf("%dd%s: <b>%d</b>", input$number_of_dice, input$die_type, rolls)
       } else {
-        # multi dice, no modifier
-        # if(input$dice_modifier == 0){
-        res <- sprintf("%s = %d", paste(roll, collapse = " + "), sum(roll))
-        #   # multi dice + modifier
-        # } else {
-        # res <- sprintf("(%s) + (%d x %d) = %d", 
-        #                paste(roll, collapse = " + "),
-        #                input$number_of_dice, input$dice_modifier,
-        #                sum(roll) + input$number_of_dice * input$dice_modifier)
-        # }      
+        # multi dice
+        res <- sprintf("%dd%s: %s = <b>%d</b>", 
+                       input$number_of_dice,
+                       input$die_type,
+                       paste(rolls, collapse = " + "), 
+                       sum(rolls))
       }
-      output$dice_roll_result <- renderUI(HTML(res))
+      
+      dice_roll_history <<- c(dice_roll_history[2:history_length],
+                              res)
+      
+      
+      
+      output$dice_roll_result <- renderUI(HTML(paste(dice_roll_history,
+                                                     collapse = "<br/>")))
     })
+  
     
 })
   

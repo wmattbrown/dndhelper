@@ -234,23 +234,23 @@ shinyUI(navbarPage("D&D Helper",
                                                   label = "Roll")),
                               column(6,
                                      uiOutput(outputId = "dice_roll_result"))
-                            )),
+                            ))#,
                      # stats page ----
-                     tabPanel("Stats",
-                              fluidRow(
-                                column(12,
-                                       h2("placeholder for loaded character name")
-                                ),
-                                fluidRow(
-                                  column(6,
-                                         tableOutput('stat_table'),
-                                         tableOutput('proficiency_table')
-                                  ),
-                                  column(6,
-                                         tableOutput('skill_table')
-                                  )
-                                )
-                              )
-                     )
+                     # tabPanel("Stats",
+                     #          fluidRow(
+                     #            column(12,
+                     #                   h2("placeholder for loaded character name")
+                     #            ),
+                     #            fluidRow(
+                     #              column(6,
+                     #                     tableOutput('stat_table'),
+                     #                     tableOutput('proficiency_table')
+                     #              ),
+                     #              column(6,
+                     #                     tableOutput('skill_table')
+                     #              )
+                     #            )
+                     #          )
+                     # )
                    ))
         
