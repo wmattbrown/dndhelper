@@ -106,7 +106,7 @@ shinyServer(function(input, output, session) {
            "proficiencies" = character_profs)
     })
     # _ save character----
-    output$save_new_character <- downloadHandler(
+    output$save_character <- downloadHandler(
       filename = function() {
         paste0(input$character_name, ".RDS")
       },
@@ -117,21 +117,6 @@ shinyServer(function(input, output, session) {
     
     
     # ROLLS ----
-    # _ roll saving throw----
-    observeEvent(input$get_saving_throw,{
-      saving_throw_history <<- c(saving_throw_history[2:length(saving_throw_history)],
-                                 sprintf("%s: %s", input$saving_throw_type,
-                                         roll_saving_throw(my_character(),
-                                                           input$saving_throw_type, 
-                                                           input$saving_throw_roll)$message))
-      
-      saving_throw_message <- paste(saving_throw_history, 
-                                    collapse = "<br/>")
-      
-      output$saving_throw_result <- renderUI(HTML(saving_throw_message))
-    })
-    
-    
     # _ SPECIFIC SAVING THROWS----
     # ___ STR----
     observeEvent(input$str_saving_throw, {
@@ -157,22 +142,6 @@ shinyServer(function(input, output, session) {
     observeEvent(input$cha_saving_throw, {
       saving_throw_helper("CHA")
     })
-    
-    # _ roll skill check----
-    observeEvent(input$get_skill_check,{
-      skill_check_history <<- c(skill_check_history[2:length(skill_check_history)],
-                                sprintf("%s: %s", input$skill_check_type,
-                                        roll_skill_check(my_character(),
-                                                         input$skill_check_type,
-                                                         input$skill_check_roll)$message))
-      
-      skill_check_message <- paste(skill_check_history,
-                                   collapse = "<br/>")
-      
-      output$skill_check_result <- renderUI(HTML(skill_check_message))
-    })
-    
-    
     
     # _ SPECIFIC SKILL CHECKS----
     # ___acrobatics----
