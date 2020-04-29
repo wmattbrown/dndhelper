@@ -22,54 +22,68 @@ get_ability_modifier <- function(stat){
   as.integer(floor((stat - 10) / 2))
 }
 
-get_skill_modifier <- function(skill){
-  my_ability_stat <- my_character[["abilities"]][skill_abilities[skill]]
-  my_proficiency <- my_character[["proficiencies"]][skill] * my_character[["proficiency"]] 
+get_skill_modifier <- function(character, skill){
+  ability_stat <- character[["abilities"]][skill_abilities[skill]]
+  proficiency <- character[["proficiencies"]][skill] * character[["proficiency"]] 
   
-  as.integer(get_ability_modifier(my_ability_stat) + my_proficiency)
+  as.integer(get_ability_modifier(ability_stat) + proficiency)
 }
 
 # this is NOT vectorized (can't use it in mutate as is, need to use sapply)
-get_saving_throw_modifier <- function(ability){
+get_saving_throw_modifier <- function(character, ability){
   stopifnot(ability %in% ability_list)
   
-  my_ability_modifier <- get_ability_modifier(my_character[["abilities"]][[ability]])
+  ability_modifier <- get_ability_modifier(character[["abilities"]][[ability]])
   
-  my_proficiency <- my_character[["proficiency"]] * my_character[["proficiencies"]][[ability]]
+  proficiency <- character[["proficiency"]] * character[["proficiencies"]][[ability]]
   
-  as.integer(my_ability_modifier + my_proficiency)
+  as.integer(ability_modifier + proficiency)
 } 
 
-roll_saving_throw <- function(ability, roll_value = NA){
+roll_saving_throw <- function(character, ability, roll_value = NA){
   stopifnot(ability %in% ability_list)
   
   # a roll can be provided, or the app can roll for you
-  if(is.na(roll_value)) roll_value <- roll(20)
+  if(is.na(roll_value)) roll_value <- roll()
   
-  my_saving_throw_modifier <- get_saving_throw_modifier(ability)
+  saving_throw_modifier <- get_saving_throw_modifier(character, ability)
   
   
-  value <- roll_value + my_saving_throw_modifier
+  value <- roll_value + saving_throw_modifier
   
   message <- sprintf("%d + %d = <b>%d</b>",
                      roll_value, 
-                     my_saving_throw_modifier,
+                     saving_throw_modifier,
                      value)
   
   list(message = message,
        value = value)
 }
 
+# for use with anything - just need the relevant ability stat and the
+# proficiency modifier for the ability
+roll_save_check <- function(ability_stat, proficiency){
+  dice_value <- roll()
+  
+  stat_modifier <- get_ability_modifier(ability_stat) + proficiency
+  
+  value <- dice_value + stat_modifier
+  
+  message <- sprintf("%d + %d = <b>%d</b>", dice_value, stat_modifier, value)
+  
+  list(message = message,
+       value = value)
+}
 
-roll_skill_check <- function(skill, roll_value = NA){
+roll_skill_check <- function(character, skill, roll_value = NA){
   stopifnot(skill %in% names(skill_abilities))
   stopifnot(roll_value <= 20 | is.na(roll_value))
   stopifnot(roll_value >=1 | is.na(roll_value))
   
   # a roll can be provided, or the app can roll for you
-  if(is.na(roll_value)) roll_value <- roll(20)
+  if(is.na(roll_value)) roll_value <- roll()
   
-  skill_modifier <- get_skill_modifier(skill)
+  skill_modifier <- get_skill_modifier(character, skill)
   
   message <- sprintf("%s + %s = <b>%s</b>", roll_value, skill_modifier, roll_value + skill_modifier) 
   value <- as.integer(roll_value + skill_modifier)
@@ -77,5 +91,10 @@ roll_skill_check <- function(skill, roll_value = NA){
   list(message = message,
        value = value)
 }
+
+
+#### NEXT GENERATION FUNCTIONS--------
+
+
 
 
