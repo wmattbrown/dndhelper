@@ -1,6 +1,18 @@
 # global
 library(dplyr)
 
+
+
+# TO DO----
+# have the character page also put in weapons and attack abilities
+#     base damage (i.e 1d8, 3d6, whatever)
+#     ability modifier, CHA, DEX, STR, whatever
+#     to hit (if weapon, the ability modifier, DEX or STR, if spell, then spell attack modifier)
+#         character sheet needs a 'spell attack modifier stat" thing, where you choose WIS, INT, or CHA (can it be STR or DEX?)
+#             spell attack modifier can then be calculated on the fly, so you don't need to change the attack modifier, just the base stats
+#             
+#   allow unlimited number of attacks to be added. only requirements is that the names are unique. i.e. there can be only one calld "dagger" or "short sword". but you can make "short sword2".
+
 options(stringsAsFactors = FALSE)
 
 set.seed(Sys.time())
@@ -9,8 +21,13 @@ source("functions.R")
 
 
 # ability list----
-ability_list <- c("STR", "DEX", "CON", "INT", "WIS", "CHA")
-names(ability_list) = ability_list
+ability_list <- c("Strength" = "STR", 
+                  "Dexterity" = "DEX", 
+                  "Constitution" = "CON", 
+                  "Intelligence" = "INT", 
+                  "Wisdom" = "WIS", 
+                  "Charisma" = "CHA")
+# names(ability_list) = ability_list
 
 # skill list----
 skill_list <- c("acrobatics",
@@ -56,10 +73,13 @@ skill_abilities <- c("acrobatics" = "DEX",
 
 
 # roll history settings ----
-history_length <- 5
+history_length <- 6
 # need to set initial values... because I'm a hack - in server now
 saving_throw_history <- rep("", history_length)
 skill_check_history <- rep("", history_length)
+
+save_check_history <- rep("", history_length)
+
 dice_roll_history <- rep("", history_length)
 
 

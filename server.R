@@ -4,19 +4,51 @@ library(shiny)
 shinyServer(function(input, output, session) {
   
   # HELPER FUNCTIONS----
+  # saving_throw_helper <- function(stat){
+  #   saving_throw_history <<- c(saving_throw_history[2:history_length],
+  #                               sprintf("%s: %s",
+  #                                       stat,
+  #                                       roll_save_check(input[[sprintf("character_%s", tolower(stat))]],
+  #                                                       input$character_proficiency * (stat %in% input$character_profs))$message))
+  #   
+  #   saving_throw_message <- paste(saving_throw_history, 
+  #                                  collapse = "<br/>")
+  #   
+  #   output$saving_throw_result <- renderUI(HTML(saving_throw_message))
+  # }
   saving_throw_helper <- function(stat){
-    saving_throw_history <<- c(saving_throw_history[2:history_length],
-                                sprintf("%s: %s",
-                                        stat,
-                                        roll_save_check(input[[sprintf("character_%s", tolower(stat))]],
-                                                        input$character_proficiency * (stat %in% input$character_profs))$message))
+    save_check_history <<- c(save_check_history[2:history_length],
+                               sprintf("%s: %s",
+                                       names(ability_list)[ability_list == stat],
+                                       roll_save_check(input[[sprintf("character_%s", tolower(stat))]],
+                                                       input$character_proficiency * (stat %in% input$character_profs))$message))
     
-    saving_throw_message <- paste(saving_throw_history, 
-                                   collapse = "<br/>")
+    save_check_message <- paste(save_check_history, 
+                                  collapse = "<br/><br/>")
     
-    output$saving_throw_result2 <- renderUI(HTML(saving_throw_message))
+    output$save_check_result <- renderUI(HTML(save_check_message))
   }
   
+  # skill_check_helper <- function(skill){
+  #   nice_skill <- skill %>% 
+  #     gsub("_skill_check", "", .) %>% 
+  #     gsub("_", " ", .) %>% 
+  #     tools::toTitleCase()
+  #   
+  #   stat <- skill_abilities[tolower(nice_skill)]
+  #   
+  #   skill_check_history <<- c(skill_check_history[2:history_length],
+  #                              sprintf("%s: %s", 
+  #                                      nice_skill,
+  #                                      roll_save_check(
+  #                                        input[[sprintf("character_%s", tolower(stat))]],
+  #                                        input$character_proficiency * (skill %in% input$character_profs))$message))
+  #   
+  #   skill_check_message <- paste(skill_check_history, 
+  #                                 collapse = "<br/>")
+  #   
+  #   output$skill_check_result <- renderUI(HTML(skill_check_message))
+  # }
   skill_check_helper <- function(skill){
     nice_skill <- skill %>% 
       gsub("_skill_check", "", .) %>% 
@@ -25,17 +57,17 @@ shinyServer(function(input, output, session) {
     
     stat <- skill_abilities[tolower(nice_skill)]
     
-    skill_check_history <<- c(skill_check_history[2:history_length],
-                               sprintf("%s: %s", 
-                                       nice_skill,
-                                       roll_save_check(
-                                         input[[sprintf("character_%s", tolower(stat))]],
-                                         input$character_proficiency * (stat %in% input$character_profs))$message))
+    save_check_history <<- c(save_check_history[2:history_length],
+                              sprintf("%s: %s", 
+                                      nice_skill,
+                                      roll_save_check(
+                                        input[[sprintf("character_%s", tolower(stat))]],
+                                        input$character_proficiency * (skill %in% input$character_profs))$message))
     
-    skill_check_message <- paste(skill_check_history, 
-                                  collapse = "<br/>")
+    save_check_message <- paste(save_check_history, 
+                                 collapse = "<br/><br/>")
     
-    output$skill_check_result2 <- renderUI(HTML(skill_check_message))
+    output$save_check_result <- renderUI(HTML(save_check_message))
   }
   
   
@@ -47,7 +79,7 @@ shinyServer(function(input, output, session) {
   # UPDATE CHARACTER STATS --------
   observeEvent(input$use_loaded_character,{
     # show the name of currently loaded character
-    output$current_character_name <- renderText(my_character()[["name"]])
+    output$current_character_name <- renderText(sprintf("Current loaded character: %s", my_character()[["name"]]))
     # set character name in character tab
     updateTextInput(session, "character_name", 
                     value = my_character()[["name"]])
@@ -150,7 +182,7 @@ shinyServer(function(input, output, session) {
     })
     # ___animal handling----
     observeEvent(input$animal_handling_skill_check, {
-      skill_check_helper("animal_handling")
+      skill_check_helper("animal handling")
     })
     # ___arcana----
     observeEvent(input$arcana_skill_check, {
@@ -206,7 +238,7 @@ shinyServer(function(input, output, session) {
     })
     # ___sleight of hand----
     observeEvent(input$sleight_of_hand_skill_check, {
-      skill_check_helper("sleight_of_hand")
+      skill_check_helper("sleight of hand")
     })
     # ___stealth----
     observeEvent(input$stealth_skill_check, {
@@ -243,7 +275,7 @@ shinyServer(function(input, output, session) {
       
       
       output$dice_roll_result <- renderUI(HTML(paste(dice_roll_history,
-                                                     collapse = "<br/>")))
+                                                     collapse = "<br/><br/>")))
     })
   
     

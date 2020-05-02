@@ -51,9 +51,10 @@ roll_saving_throw <- function(character, ability, roll_value = NA){
   
   value <- roll_value + saving_throw_modifier
   
-  message <- sprintf("%d + %d = <b>%d</b>",
+  message <- sprintf("%d %s %d = <b>%d</b>",
                      roll_value, 
-                     saving_throw_modifier,
+                     ifelse(saving_throw_modifier >= 0, "+", "-"),
+                     abs(saving_throw_modifier),
                      value)
   
   list(message = message,
@@ -69,7 +70,11 @@ roll_save_check <- function(ability_stat, proficiency){
   
   value <- dice_value + stat_modifier
   
-  message <- sprintf("%d + %d = <b>%d</b>", dice_value, stat_modifier, value)
+  message <- sprintf("%d %s %d = <b>%d</b>", 
+                     dice_value, 
+                     ifelse(stat_modifier >= 0, "+", "-"),
+                     abs(stat_modifier), 
+                     value)
   
   list(message = message,
        value = value)
@@ -85,7 +90,11 @@ roll_skill_check <- function(character, skill, roll_value = NA){
   
   skill_modifier <- get_skill_modifier(character, skill)
   
-  message <- sprintf("%s + %s = <b>%s</b>", roll_value, skill_modifier, roll_value + skill_modifier) 
+  message <- sprintf("%s %s %s = <b>%s</b>", 
+                     roll_value, 
+                     ifelse(skill_modifier >= 0, "+", "-"),
+                     abs(skill_modifier), 
+                     roll_value + skill_modifier) 
   value <- as.integer(roll_value + skill_modifier)
   
   list(message = message,
@@ -93,7 +102,6 @@ roll_skill_check <- function(character, skill, roll_value = NA){
 }
 
 
-#### NEXT GENERATION FUNCTIONS--------
 
 
 
